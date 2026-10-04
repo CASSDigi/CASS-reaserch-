@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CASS by abdul | Research</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&family=Manrope:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#0d1512;--panel:#131e1a;--line:#243229;--ink:#e9eeea;--mute:#8fa399;--gold:#c2a15b;--on:#0d1512}
+@media(prefers-color-scheme:light){:root{--bg:#eef0ee;--panel:#fafbfa;--line:#d3dad5;--ink:#101a16;--mute:#5b6b62;--gold:#8a6d2b;--on:#fff}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Manrope,system-ui,sans-serif}
+main{max-width:820px;margin:0 auto;padding:28px 16px 56px}
+header{display:flex;align-items:baseline;gap:12px;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:22px}
+.mark{font:600 38px/1 "Cormorant Garamond",serif;letter-spacing:.32em;color:var(--gold)}
+.by{font:italic 500 19px "Cormorant Garamond",serif;color:var(--mute)}
+.lead{color:var(--mute);margin:0 0 18px}
+.p{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px;margin-bottom:16px}
+label{display:block;font-size:13px;color:var(--mute);margin-bottom:4px}
+textarea,select,input{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px}
+textarea{min-height:90px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+button{font:500 15px Manrope,sans-serif;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:6px;padding:9px 14px;cursor:pointer}
+button:hover{border-color:var(--gold)}
+button.go{width:100%;background:var(--gold);color:var(--on);border-color:var(--gold);font-weight:700;padding:12px}
+button:disabled{opacity:.5}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.hide{display:none}.err{color:#d0594a}
+#qs{list-style:none;margin:8px 0 0;padding:0;color:var(--mute);font-size:14px}
+#qs li{padding:3px 0}#qs li.ok{color:var(--ink)}#qs li.ok::before{content:"\2713  ";color:var(--gold)}
+#rep{font:19px/1.7 "Cormorant Garamond",Georgia,serif;font-weight:500;max-width:66ch}
+#rep h2,#rep h3,#rep h4{font:700 17px/1.3 Manrope,sans-serif;color:var(--gold);margin:1.6em 0 .4em}
+#rep ul{padding-left:20px}
+a{color:var(--gold)}a.c{font:700 11px Manrope;vertical-align:super;text-decoration:none;padding:0 1px}
+#src{font-size:14px;color:var(--mute);padding-left:22px}#src li{margin:3px 0;overflow-wrap:anywhere}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.m{padding:10px 12px;border-radius:6px;margin:8px 0;font-size:15px}.m.user{background:var(--bg);margin-left:12%}.m.bot{border:1px solid var(--line)}
+.m p{margin:.3em 0}
+.ask{display:flex;gap:8px;margin-top:10px}
+.hl button{display:block;width:100%;text-align:left;margin-top:6px}
+footer{text-align:center;color:var(--mute);font:italic 500 16px "Cormorant Garamond",serif;margin-top:28px}
+@media(max-width:520px){.row{grid-template-columns:1fr}.mark{font-size:30px}}
+@media print{body{background:#fff;color:#000}.no-print{display:none!important}#rep{color:#000}}
+</style>
+</head>
+<body>
+<main>
+<header><span class="mark">CASS</span><span class="by">by abdul</span></header>
+<p class="lead no-print">Live-web research with numbered, linked sources.</p>
+
+<section class="p no-print">
+<label for="topic">What should be researched?</label>
+<textarea id="topic" placeholder="A topic, question, company, product, claim or comparison"></textarea>
+<div class="row">
+<div><label for="mode">Type</label><select id="mode"><option value="deep">Deep dive</option><option value="compare">Compare options</option><option value="fact">Fact-check a claim</option><option value="market">Market and competitors</option><option value="dd">Company or product due diligence</option><option value="eli">Explain simply</option></select></div>
+<div><label for="depth">Depth</label><select id="depth"><option value="quick">Quick (3 angles)</option><option value="std" selected>Standard (5 angles)</option><option value="deep">Exhaustive (7 angles)</option></select></div>
+</div>
+<button class="go" id="run">Run research</button>
+</section>
+
+<section class="p hide no-print" id="prog"><b id="ptitle"></b><ul id="qs"></ul><p class="err" id="perr"></p></section>
+
+<section class="hide" id="doc">
+<article id="rep"></article>
+<h3>Sources</h3><ol id="src"></ol>
+<div class="bar no-print"><button id="copy">Copy</button><button id="dl">Download .md</button><button id="pdf">Print / PDF</button></div>
+<div class="p no-print"><label for="q">Follow-up</label><div id="msgs"></div>
+<div class="ask"><input id="q" placeholder="Ask anything about this report"><button id="askb">Ask</button></div></div>
+</section>
+
+<section class="p hide no-print hl" id="hb"><label>Past research</label><div id="hl"></div></section>
+
+<section class="p no-print">
+<label for="img">Trace an image's origin (paste its URL)</label>
+<input id="img" type="url" placeholder="https://...">
+<div class="bar"><button id="lens">Google Lens</button><button id="tin">TinEye</button></div>
+</section>
+<footer>CASS by abdul</footer>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let S={title:"",report:"",sources:[]},chat=[];
+const md=t=>esc(t).split(/\n{2,}/).map(b=>{b=b.trim();
+ if(/^#{1,3} /.test(b))return b.replace(/^(#{1,3}) ([^\n]*)/,(m,h,x)=>`<h${h.length+1}>${x}</h${h.length+1}>`);
+ if(/^[-*] /.test(b))return"<ul>"+b.split("\n").map(l=>"<li>"+l.replace(/^[-*] /,"")+"</li>").join("")+"</ul>";
+ return"<p>"+b.replace(/\n/g,"<br>")+"</p>"}).join("").replace(/\*\*(.+?)\*\*/g,"<b>$1</b>");
+const hdr=()=>({"content-type":"application/json","x-access-code":localStorage.getItem("cass_code")||""});
+async function post(url,body){
+ const go=()=>fetch(url,{method:"POST",headers:hdr(),body:JSON.stringify(body)});
+ let r=await go();
+ if(r.status===401){const c=prompt("Access code");if(!c)throw new Error("Access code required");localStorage.setItem("cass_code",c);r=await go()}
+ if(r.status===401)throw new Error("Wrong access code");return r}
+async function run(){
+ const topic=$("topic").value.trim();if(!topic)return $("topic").focus();
+ $("run").disabled=true;$("doc").classList.add("hide");$("prog").classList.remove("hide");$("perr").textContent="";$("ptitle").textContent="Planning...";$("qs").innerHTML="";
+ try{
+  const r=await post("/api/research",{topic,mode:$("mode").value,depth:$("depth").value});
+  const rd=r.body.getReader(),dec=new TextDecoder();let buf="";
+  for(;;){const{value,done}=await rd.read();if(done)break;buf+=dec.decode(value,{stream:true});const ls=buf.split("\n");buf=ls.pop();ls.filter(Boolean).forEach(l=>ev(JSON.parse(l)))}
+ }catch(e){$("perr").textContent=e.message}
+ $("run").disabled=false}
+function ev(e){
+ if(e.t==="plan"){$("ptitle").textContent=e.title;$("qs").innerHTML=e.questions.map((q,i)=>`<li id="q${i}">${esc(q)}</li>`).join("")}
+ if(e.t==="step")$("q"+e.i).className="ok";
+ if(e.t==="done"){S={title:e.title,report:e.report,sources:e.sources};chat=[];$("msgs").innerHTML="";render();saveH()}
+ if(e.t==="error")$("perr").textContent=e.message}
+function render(){
+ $("rep").innerHTML=md(S.report).replace(/\[(\d+)\]/g,'<a class="c" href="#s$1">$1</a>');
+ $("src").innerHTML="";
+ S.sources.forEach((s,i)=>{const li=document.createElement("li"),a=document.createElement("a");li.id="s"+(i+1);a.textContent=s.title||s.url;if(/^https?:\/\//.test(s.url)){a.href=s.url;a.target="_blank";a.rel="noopener"}li.append(a);$("src").append(li)});
+ $("doc").classList.remove("hide");$("doc").scrollIntoView()}
+const bub=(c,t)=>{const d=document.createElement("div");d.className="m "+c;d.innerHTML=md(t);$("msgs").append(d)};
+async function askQ(){
+ const q=$("q").value.trim();if(!q)return;$("q").value="";chat.push({role:"user",content:q});bub("user",q);$("askb").disabled=true;
+ try{const j=await(await post("/api/ask",{report:S.report,messages:chat})).json();if(j.error)throw new Error(j.error);chat.push({role:"assistant",content:j.text});bub("bot",j.text)}
+ catch(e){bub("bot","Failed: "+e.message)}
+ $("askb").disabled=false}
+const H=()=>{try{return JSON.parse(localStorage.getItem("cass_h")||"[]")}catch{return[]}};
+function saveH(){try{const h=H().filter(x=>x.title!==S.title);h.unshift(S);localStorage.setItem("cass_h",JSON.stringify(h.slice(0,20)))}catch{}drawH()}
+function drawH(){const h=H();$("hb").classList.toggle("hide",!h.length);$("hl").innerHTML="";
+ h.forEach(x=>{const b=document.createElement("button");b.textContent=x.title;b.onclick=()=>{S=x;chat=[];$("msgs").innerHTML="";render()};$("hl").append(b)})}
+$("run").onclick=run;$("askb").onclick=askQ;$("q").onkeydown=e=>{if(e.key==="Enter")askQ()};
+$("copy").onclick=async()=>{await navigator.clipboard.writeText(S.report);$("copy").textContent="Copied";setTimeout(()=>$("copy").textContent="Copy",1500)};
+$("dl").onclick=()=>{const t=`# ${S.title}\n\n${S.report}\n\n## Sources\n${S.sources.map((s,i)=>`${i+1}. ${s.title||""} ${s.url}`).join("\n")}\n`;const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([t],{type:"text/markdown"}));a.download=(S.title||"research").replace(/[^\w]+/g,"-")+".md";a.click()};
+$("pdf").onclick=()=>print();
+const imgGo=u=>{const v=$("img").value.trim();/^https?:\/\//.test(v)?open(u+encodeURIComponent(v),"_blank","noopener"):$("img").focus()};
+$("lens").onclick=()=>imgGo("https://lens.google.com/uploadbyurl?url=");
+$("tin").onclick=()=>imgGo("https://tineye.com/search?url=");
+drawH();
+</script>
+</body>
+</html>
