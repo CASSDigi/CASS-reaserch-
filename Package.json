@@ -1,0 +1,9 @@
+{
+  "name": "cass-research",
+  "version": "1.0.0",
+  "description": "CASS by abdul: live-web deep research with cited sources",
+  "type": "module",
+  "private": true,
+  "engines": { "node": ">=20.6" },
+  "scripts": { "start": "node server.js", "dev": "node --env-file=.env server.js" }
+}
